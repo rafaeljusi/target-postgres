@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/__main__.py",
             "console": "externalTerminal",
-            "args": ["--config", "config.json"],
+            "args": ["--config", "config.json", "--input", "/home/rafaeljusi/sync/sap/tap-aarim/output.json", "--output", "output.json"],
             "justMyCode": false
         }
     ]

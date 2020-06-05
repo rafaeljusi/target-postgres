@@ -30,8 +30,9 @@ def _update_schema_0_to_1(table_metadata, table_schema):
     """
 
     for field, property in table_schema['schema']['properties'].items():
-        if json_schema.is_datetime(property):
-            table_metadata['mappings'][field]['format'] = json_schema.DATE_TIME_FORMAT
+        format = json_schema.get('format')
+        if format:
+            table_metadata['mappings'][field]['format'] = json_schema.get('format')
 
     table_metadata['schema_version'] = 1
 
@@ -730,6 +731,9 @@ class PostgresTarget(SQLInterface):
         if 't' == json_schema.shorthand(mapped_schema):
             mapping['format'] = 'date-time'
 
+        if 'g' == json_schema.shorthand(mapped_schema):
+            mapping['format'] = 'geometry'
+        
         metadata['mappings'][to_name] = mapping
 
         self._set_table_metadata(cur, table_name, metadata)
@@ -777,14 +781,14 @@ class PostgresTarget(SQLInterface):
     def __get_table_schema(self, cur, name):
         # Purely exists for migration purposes. DO NOT CALL DIRECTLY
         cur.execute(sql.SQL('''
-            SELECT column_name, data_type, is_nullable FROM information_schema.columns
+            SELECT column_name, data_type, is_nullable, udt_name FROM information_schema.columns
             WHERE table_schema = {} and table_name = {};
         ''').format(
             sql.Literal(self.postgres_schema), sql.Literal(name)))
 
         properties = {}
         for column in cur.fetchall():
-            properties[column[0]] = self.sql_type_to_json_schema(column[1], column[2] == 'YES')
+            properties[column[0]] = self.sql_type_to_json_schema(column[1], column[2] == 'YES', column[3])
 
         metadata = self._get_table_metadata(cur, name)
 
@@ -800,7 +804,7 @@ class PostgresTarget(SQLInterface):
 
         return metadata
 
-    def sql_type_to_json_schema(self, sql_type, is_nullable):
+    def sql_type_to_json_schema(self, sql_type, is_nullable, data_type):
         """
         Given a string representing a SQL column type, and a boolean indicating whether
         the associated column is nullable, return a compatible JSONSchema structure.
@@ -812,6 +816,9 @@ class PostgresTarget(SQLInterface):
         if sql_type == 'timestamp with time zone':
             json_type = 'string'
             _format = 'date-time'
+        elif sql_type == 'USER-DEFINED' and data_type == 'geometry':
+            json_type = 'string'
+            _format = 'geometry'
         elif sql_type == 'bigint':
             json_type = 'integer'
         elif sql_type == 'double precision':
@@ -854,6 +861,10 @@ class PostgresTarget(SQLInterface):
                 schema['format'] == 'date-time' and \
                 _type == 'string':
             sql_type = 'timestamp with time zone'
+        elif 'format' in schema and \
+                schema['format'] == 'geometry' and \
+                _type == 'string':
+            sql_type = 'geometry(Polygon)'
         elif _type == 'boolean':
             sql_type = 'boolean'
         elif _type == 'integer':

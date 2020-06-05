@@ -5,7 +5,7 @@ from os import path
 from setuptools import setup, find_packages
 
 this_directory = path.abspath(path.dirname(__file__))
-with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
+with open(path.join(this_directory, 'README.md')) as f:
     long_description = f.read()
 
 setup(
@@ -20,7 +20,6 @@ setup(
     py_modules=['target_postgres'],
     install_requires=[
         'arrow==0.15.5',
-        'psycopg2==2.8.5',
         'psycopg2-binary==2.8.5',
         'singer-python==5.9.0'
     ],

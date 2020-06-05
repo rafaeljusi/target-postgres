@@ -15,6 +15,7 @@ NUMBER = 'number'
 BOOLEAN = 'boolean'
 STRING = 'string'
 DATE_TIME_FORMAT = 'date-time'
+GEOMETRY = 'geometry'
 
 _PYTHON_TYPE_TO_JSON_SCHEMA = {
     int: INTEGER,
@@ -72,9 +73,9 @@ def simple_type(schema):
     """
     t = get_type(schema)
 
-    if is_datetime(schema):
+    if schema.get('format'):
         return {'type': t,
-                'format': DATE_TIME_FORMAT}
+                'format': schema.get('format')}
 
     return {'type': t}
 
@@ -328,10 +329,11 @@ def _simplify__implicit_anyof(root_schema, schema):
 
     types.discard(NULL)
 
-    if is_datetime(schema):
+    format = schema.get('format')
+    if format:
         schemas.append(Cachable({
             'type': [STRING],
-            'format': DATE_TIME_FORMAT
+            'format': format
         }))
 
         types.remove(STRING)
@@ -559,7 +561,8 @@ _shorthand_mapping = {
     'number': 'f',
     'integer': 'i',
     'boolean': 'b',
-    'date-time': 't'
+    'date-time': 't',
+    'geometry': 'g'
 }
 
 
@@ -585,5 +588,9 @@ def shorthand(schema):
     if 'format' in schema and 'date-time' == schema['format'] and STRING in t:
         t.remove(STRING)
         t.append('date-time')
+
+    if 'format' in schema and 'geometry' == schema['format'] and STRING in t:
+        t.remove(STRING)
+        t.append('geometry')
 
     return _type_shorthand(t)

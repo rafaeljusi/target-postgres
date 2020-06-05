@@ -17,13 +17,12 @@ from target_postgres.stream_tracker import StreamTracker
 LOGGER = singer.get_logger()
 
 
-def main(target):
+def main(target, config):
     """
     Given a target, stream stdin input as a text stream.
     :param target: object which implements `write_batch` and `activate_version`
     :return: None
     """
-    config = utils.parse_args([]).config
     input_stream = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8')
     stream_to_target(input_stream, target, config=config)
 

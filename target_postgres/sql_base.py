@@ -730,6 +730,8 @@ class SQLInterface:
             row = deepcopy(default_row)
 
             for path in paths:
+                json_schema_col = streamed_schema['schema']['properties'].get(path, None)['anyOf'][0]
+
                 json_schema_string_type, value = record.get(path, (None, None))
 
                 ## Serialize fields which are not present but have default values set
@@ -750,7 +752,12 @@ class SQLInterface:
                     value_json_schema = {'type': json_schema.STRING,
                                          'format': json_schema.DATE_TIME_FORMAT}
                 else:
-                    value_json_schema = {'type': json_schema_string_type}
+                    json_schema_string_format = json_schema_col.get('format')
+                    if json_schema_string_format:
+                        value_json_schema = {'type': json_schema_string_type,
+                                             'format': json_schema_string_format}
+                    else:
+                        value_json_schema = {'type': json_schema_string_type}
 
                 ## Serialize NULL default value
                 value = self.serialize_table_record_null_value(remote_schema, streamed_schema, path, value)

@@ -1,6 +1,7 @@
 import io
 import sys
 
+import argparse
 from singer import utils
 import psycopg2
 
@@ -11,6 +12,53 @@ REQUIRED_CONFIG_KEYS = [
     'postgres_database'
 ]
 
+
+def parse_args(required_config_keys):
+    '''Parse standard command-line args.
+
+    Parses the command-line arguments mentioned in the SPEC and the
+    BEST_PRACTICES documents:
+
+    -c,--config     Config file
+    -s,--state      State file
+    -d,--discover   Run in discover mode
+    -p,--properties Properties file: DEPRECATED, please use --catalog instead
+    --catalog       Catalog file
+
+    Returns the parsed args object from argparse. For each argument that
+    point to JSON files (config, state, properties), we will automatically
+    load and parse the JSON file.
+    '''
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument(
+        '-c', '--config',
+        help='Config file',
+        required=True)
+
+    parser.add_argument(
+        '--input',
+        help='Inpit file')
+
+    parser.add_argument(
+        '--output',
+        help='Output file')
+
+    args = parser.parse_args()
+    if args.config:
+        setattr(args, 'config_path', args.config)
+        args.config = utils.load_json(args.config)
+    if args.input:
+        setattr(args, 'input_path', args.input)
+        sys.stdin = open(args.input, 'r')
+    if args.output:
+        setattr(args, 'output_path', args.output)
+        sys.stdout = open(args.output, 'w')
+    
+
+    utils.check_config(args.config, required_config_keys)
+
+    return args
 
 def main(config, input_stream=None):
     with psycopg2.connect(
@@ -39,19 +87,10 @@ def main(config, input_stream=None):
         if input_stream:
             target_tools.stream_to_target(input_stream, postgres_target, config=config)
         else:
-            target_tools.main(postgres_target)
+            target_tools.main(postgres_target, config=config)
 
 
 def cli():
-    args = utils.parse_args(REQUIRED_CONFIG_KEYS)
-
-    # try:
-    #     with open('../output.json','r') as sys.stdin:
-    #         main(args.config)
-
-    # finally:
-    #     # restore original standard input
-    #     sys.stdin = sys.__stdin__
-    #     return
+    args = parse_args(REQUIRED_CONFIG_KEYS)
 
     main(args.config)
