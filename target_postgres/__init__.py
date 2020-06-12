@@ -9,7 +9,7 @@ from target_postgres.postgres import MillisLoggingConnection, PostgresTarget
 from target_postgres import target_tools
 
 REQUIRED_CONFIG_KEYS = [
-    'postgres_database'
+    'database'
 ]
 
 
@@ -63,20 +63,20 @@ def parse_args(required_config_keys):
 def main(config, input_stream=None):
     with psycopg2.connect(
             connection_factory=MillisLoggingConnection,
-            host=config.get('postgres_host', 'localhost'),
-            port=config.get('postgres_port', 5432),
-            dbname=config.get('postgres_database'),
-            user=config.get('postgres_username'),
-            password=config.get('postgres_password'),
-            sslmode=config.get('postgres_sslmode'),
-            sslcert=config.get('postgres_sslcert'),
-            sslkey=config.get('postgres_sslkey'),
-            sslrootcert=config.get('postgres_sslrootcert'),
-            sslcrl=config.get('postgres_sslcrl')
+            host=config.get('host', 'localhost'),
+            port=config.get('port', 5432),
+            dbname=config.get('database'),
+            user=config.get('username'),
+            password=config.get('password'),
+            sslmode=config.get('sslmode'),
+            sslcert=config.get('sslcert'),
+            sslkey=config.get('sslkey'),
+            sslrootcert=config.get('sslrootcert'),
+            sslcrl=config.get('sslcrl')
     ) as connection:
         postgres_target = PostgresTarget(
             connection,
-            postgres_schema=config.get('postgres_schema', 'public'),
+            postgres_schema=config.get('schema', 'public'),
             logging_level=config.get('logging_level'),
             persist_empty_tables=config.get('persist_empty_tables'),
             add_upsert_indexes=config.get('add_upsert_indexes', True),

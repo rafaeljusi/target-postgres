@@ -1,17 +1,21 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "name": "Tap",
-            "type": "python",
-            "request": "launch",
-            "program": "${workspaceFolder}/__main__.py",
-            "console": "externalTerminal",
-            "args": ["--config", "config.json", "--input", "/home/rafaeljusi/sync/sap/tap-aarim/output.json", "--output", "output.json"],
-            "justMyCode": false
-        }
-    ]
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Tap",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/__main__.py",
+      "console": "externalTerminal",
+      "args": [
+        "--config", "/home/rafaeljusi/sync/sap/target-dw/config.json",
+        "--input", "/home/rafaeljusi/sync/sap/tap-aarim/output.json",
+        "--output", "/home/rafaeljusi/sync/sap/target-dw/output.json"
+      ],
+      "justMyCode": false
+    }
+  ]
 }
