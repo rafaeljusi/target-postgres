@@ -11,9 +11,9 @@
       "program": "${workspaceFolder}/__main__.py",
       "console": "externalTerminal",
       "args": [
-        "--config", "/home/rafaeljusi/sync/sap/target-dw/config.json",
-        "--input", "/home/rafaeljusi/sync/sap/tap-aarim/output.json",
-        "--output", "/home/rafaeljusi/sync/sap/target-dw/output.json"
+        "--config", "/home/rafaeljusi/albert-sync/magva/target-dw/config.json",
+        "--input", "/home/rafaeljusi/albert-sync/magva/tap-aarim/output.json",
+        "--output", "/home/rafaeljusi/albert-sync/magva/target-dw/output.json"
       ],
       "justMyCode": false
     }

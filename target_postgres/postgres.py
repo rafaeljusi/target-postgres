@@ -600,7 +600,9 @@ class PostgresTarget(SQLInterface):
                 with io.StringIO() as out:
                     writer = csv.DictWriter(out, csv_headers)
                     writer.writerow(row)
-                    return out.getvalue()
+                    rowValue = out.getvalue()
+                    rowValue = rowValue.replace("\u0000", "")
+                    return rowValue
             except StopIteration:
                 return ''
 

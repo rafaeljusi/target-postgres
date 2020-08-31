@@ -9,9 +9,9 @@ with open(path.join(this_directory, 'README.md')) as f:
     long_description = f.read()
 
 setup(
-    name='singer-target-postgres',
-    url='https://github.com/datamill-co/target-postgres',
-    author='datamill',
+    name='target-postgres',
+    author='albert.bi',
+    url='https://albert.bi',
     version="1.0.1",
     description='Singer.io target for loading data into postgres',
     long_description=long_description,
