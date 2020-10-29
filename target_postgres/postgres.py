@@ -818,6 +818,9 @@ class PostgresTarget(SQLInterface):
         if sql_type == 'timestamp with time zone':
             json_type = 'string'
             _format = 'date-time'
+        elif sql_type == 'time without time zone':
+            json_type = 'string'
+            _format = 'time'
         elif sql_type == 'USER-DEFINED' and data_type == 'geometry':
             json_type = 'string'
             _format = 'geometry'
@@ -828,6 +831,8 @@ class PostgresTarget(SQLInterface):
         elif sql_type == 'boolean':
             json_type = 'boolean'
         elif sql_type == 'text':
+            json_type = 'string'
+        elif sql_type == 'uuid':
             json_type = 'string'
         else:
             raise PostgresError('Unsupported type `{}` in existing target table'.format(sql_type))
@@ -864,16 +869,24 @@ class PostgresTarget(SQLInterface):
                 _type == 'string':
             sql_type = 'timestamp with time zone'
         elif 'format' in schema and \
+                schema['format'] == 'time' and \
+                _type == 'string':
+            sql_type = 'time without time zone'
+        elif 'format' in schema and \
                 schema['format'] == 'geometry' and \
                 _type == 'string':
             sql_type = 'geometry(Polygon)'
+        elif 'format' in schema and \
+                schema['format'] == 'uuid' and \
+                _type == 'string':
+            sql_type = 'uuid'
         elif _type == 'boolean':
             sql_type = 'boolean'
         elif _type == 'integer':
             sql_type = 'bigint'
         elif _type == 'number':
             sql_type = 'double precision'
-
+        
         if not_null:
             sql_type += ' NOT NULL'
 
