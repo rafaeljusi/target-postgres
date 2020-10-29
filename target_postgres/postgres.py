@@ -815,7 +815,7 @@ class PostgresTarget(SQLInterface):
         :return: JSONSchema
         """
         _format = None
-        if sql_type == 'timestamp with time zone':
+        if sql_type == 'timestamp without time zone':
             json_type = 'string'
             _format = 'date-time'
         elif sql_type == 'time without time zone':
@@ -867,7 +867,7 @@ class PostgresTarget(SQLInterface):
         if 'format' in schema and \
                 schema['format'] == 'date-time' and \
                 _type == 'string':
-            sql_type = 'timestamp with time zone'
+            sql_type = 'timestamp without time zone'
         elif 'format' in schema and \
                 schema['format'] == 'time' and \
                 _type == 'string':
