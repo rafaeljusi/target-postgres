@@ -12,7 +12,7 @@ setup(
     name='target-postgres',
     author='albert.bi',
     url='https://albert.bi',
-    version="1.0.1",
+    version="1.1.1",
     description='Singer.io target for loading data into postgres',
     long_description=long_description,
     long_description_content_type='text/markdown',

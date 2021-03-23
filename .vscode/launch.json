@@ -5,15 +5,27 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Tap",
+      "name": "Test",
       "type": "python",
       "request": "launch",
       "program": "${workspaceFolder}/__main__.py",
       "console": "externalTerminal",
       "args": [
-        "--config", "/home/rafaeljusi/albert-sync/magva/target-dw/config.json",
-        "--input", "/home/rafaeljusi/albert-sync/magva/tap-aarim/output.json",
-        "--output", "/home/rafaeljusi/albert-sync/magva/target-dw/output.json"
+        "--config", "/home/rafaeljusi/albert-sync/b1/target-teste/config.json",
+        "--test"
+      ],
+      "justMyCode": false
+    },
+    {
+      "name": "Target",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/__main__.py",
+      "console": "externalTerminal",
+      "args": [
+        "--config", "/home/rafaeljusi/albert-sync/b1/target-teste/config.json",
+        "--input", "/home/rafaeljusi/albert-sync/b1/tap-sap-b1/output.json",
+        "--output", "/home/rafaeljusi/albert-sync/b1/target-teste/output.json"
       ],
       "justMyCode": false
     }

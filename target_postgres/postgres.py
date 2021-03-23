@@ -108,7 +108,7 @@ class PostgresTarget(SQLInterface):
         add_upsert_indexes=True,
         **kwargs):
 
-        self.LOGGER.info(
+        self.LOGGER.debug(
             'PostgresTarget created with established connection: `{}`, PostgreSQL schema: `{}`'.format(connection.dsn,
                                                                                                        postgres_schema))
 
