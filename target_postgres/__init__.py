@@ -117,8 +117,6 @@ def main(config, input_stream=None):
         else:
             target_tools.main(postgres_target, config=config)
 
-    print('finished')
-
 
 def cli():
     args = parse_args(REQUIRED_CONFIG_KEYS)
