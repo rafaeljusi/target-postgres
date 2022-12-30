@@ -562,7 +562,8 @@ _shorthand_mapping = {
     'integer': 'i',
     'boolean': 'b',
     'date-time': 't',
-    'geometry': 'g'
+    'geometry': 'g',
+    'uuid': 'u',
 }
 
 
@@ -592,5 +593,9 @@ def shorthand(schema):
     if 'format' in schema and 'geometry' == schema['format'] and STRING in t:
         t.remove(STRING)
         t.append('geometry')
+
+    if 'format' in schema and 'uuid' == schema['format'] and STRING in t:
+        t.remove(STRING)
+        t.append('uuid')
 
     return _type_shorthand(t)

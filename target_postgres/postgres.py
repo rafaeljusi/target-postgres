@@ -255,8 +255,9 @@ class PostgresTarget(SQLInterface):
                     for key_property in stream_buffer.key_properties:
                         canonicalized_key, remote_column_schema = self.fetch_column_from_path((key_property,),
                                                                                               current_table_schema)
-                        if self.json_schema_to_sql_type(remote_column_schema) \
-                                != self.json_schema_to_sql_type(stream_buffer.schema['properties'][key_property]):
+                        remote_schema = self.json_schema_to_sql_type(remote_column_schema)
+                        stream_schema = self.json_schema_to_sql_type(stream_buffer.schema['properties'][key_property])
+                        if remote_schema != stream_schema:
                             raise PostgresError(
                                 ('`key_properties` type change detected for "{}". ' +
                                  'Existing values are: {}. ' +
@@ -266,7 +267,7 @@ class PostgresTarget(SQLInterface):
                                     json_schema.get_type(stream_buffer.schema['properties'][key_property]),
                                     self.json_schema_to_sql_type(
                                         current_table_schema['schema']['properties'][key_property]),
-                                    self.json_schema_to_sql_type(stream_buffer.schema['properties'][key_property])
+                                        stream_schema
                                 ))
 
                 target_table_version = current_table_version or stream_buffer.max_version
@@ -736,6 +737,9 @@ class PostgresTarget(SQLInterface):
         if 'g' == json_schema.shorthand(mapped_schema):
             mapping['format'] = 'geometry'
         
+        if 'u' == json_schema.shorthand(mapped_schema):
+            mapping['format'] = 'uuid'
+        
         metadata['mappings'][to_name] = mapping
 
         self._set_table_metadata(cur, table_name, metadata)
@@ -834,6 +838,7 @@ class PostgresTarget(SQLInterface):
             json_type = 'string'
         elif sql_type == 'uuid':
             json_type = 'string'
+            _format = 'uuid'
         else:
             raise PostgresError('Unsupported type `{}` in existing target table'.format(sql_type))
 
